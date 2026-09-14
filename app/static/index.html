@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ProofPilot — Evidence-first delivery agent</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, system-ui, sans-serif; background:#08111f; color:#e9f1ff; }
+    body { max-width: 980px; margin: 0 auto; padding: 36px 20px 60px; }
+    h1 { font-size: clamp(2rem, 5vw, 3.6rem); margin-bottom:.35rem; } .lead { color:#b5c5dc; max-width:75ch; }
+    .tag { color:#8ee6b3; font-weight:700; text-transform:uppercase; letter-spacing:.08em; font-size:.78rem; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; } @media(max-width:700px){.grid{grid-template-columns:1fr}}
+    textarea, select, button { width:100%; box-sizing:border-box; border-radius:10px; border:1px solid #31445f; background:#0f1b2c; color:inherit; padding:12px; font:inherit; }
+    textarea { min-height:180px; resize:vertical; } label { display:block; margin:.6rem 0; font-weight:700; }
+    button { background:#4f7cff; border:0; font-weight:800; cursor:pointer; margin-top:16px; } button:hover { background:#7197ff; }
+    .callout, #result { margin-top:22px; padding:16px; border-radius:12px; background:#0d192a; border:1px solid #253954; }
+    #result { white-space:pre-wrap; overflow-wrap:anywhere; display:none; } .small { color:#afbed4; font-size:.9rem; }
+  </style>
+</head>
+<body>
+  <p class="tag">Professional Agent · Human approval required</p>
+  <h1>ProofPilot</h1>
+  <p class="lead">Turn an unstructured client brief into an evidence ledger, scope draft, risk register, milestones, and the exact decisions that still require a human.</p>
+  <div class="callout"><strong>Safety boundary:</strong> ProofPilot never sends a proposal, promises a date, or commits a price. Those actions stay blocked for human approval.</div>
+  <form id="intake">
+    <div class="grid">
+      <div><label for="brief">Client brief</label><textarea id="brief" required>We need a small delivery dashboard for restaurant owners. It should show order status, let staff update delivery progress, and work well on phones. We need a reliable first release.</textarea></div>
+      <div><label for="context">Project context (optional)</label><textarea id="context">Existing Laravel API exposes orders and delivery status. Authentication roles are admin, vendor, and delivery staff.</textarea></div>
+    </div>
+    <label for="mode">Execution mode</label>
+    <select id="mode"><option value="demo">Local transparent demo (no AWS/model call)</option><option value="aws">AWS / Strands run (requires configured AWS credentials)</option></select>
+    <button type="submit">Prepare evidence-first delivery brief</button>
+  </form>
+  <pre id="result"></pre>
+  <p class="small">AWS mode uses the Strands Agents SDK and your standard AWS credential chain. This app does not store credentials.</p>
+  <script>
+    document.getElementById('intake').addEventListener('submit', async (event) => {
+      event.preventDefault(); const result = document.getElementById('result'); result.style.display='block'; result.textContent='Working…';
+      const response = await fetch('/api/analyze', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({brief:brief.value, project_context:context.value, mode:mode.value})});
+      const data = await response.json(); result.textContent = JSON.stringify(data, null, 2);
+    });
+  </script>
+</body>
+</html>

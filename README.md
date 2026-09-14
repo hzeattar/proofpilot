@@ -68,8 +68,9 @@ evidence tool are in [app/agent.py](app/agent.py).
 
 ## Architecture
 
-See [docs/architecture.md](docs/architecture.md) for the diagram and the
-explicit human-control boundary.
+See the [architecture diagram](docs/architecture.svg) and the
+[architecture notes](docs/architecture.md) for the explicit human-control
+boundary.
 
 ## Demo video
 

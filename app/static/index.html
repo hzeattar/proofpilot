@@ -36,7 +36,7 @@
   <script>
     document.getElementById('intake').addEventListener('submit', async (event) => {
       event.preventDefault(); const result = document.getElementById('result'); result.style.display='block'; result.textContent='Working…';
-      const response = await fetch('/api/analyze', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({brief:brief.value, project_context:context.value, mode:mode.value})});
+      const response = await fetch('/api/analyze', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({brief:document.getElementById('brief').value, project_context:document.getElementById('context').value, mode:document.getElementById('mode').value})});
       const data = await response.json(); result.textContent = JSON.stringify(data, null, 2);
     });
   </script>

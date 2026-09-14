@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">ProofPilot architecture</title>
+  <desc id="desc">A professional user submits an intake to FastAPI. The app can run a transparent local workflow or a Strands Agent connected to AWS Bedrock. Both produce an evidence-led draft that stops at a human approval gate.</desc>
+  <defs><style>text{font-family:Arial,sans-serif;fill:#eaf2ff}.box{fill:#11223b;stroke:#7197ff;stroke-width:2}.aws{fill:#38255f;stroke:#caa8ff;stroke-width:2}.gate{fill:#164635;stroke:#8ee6b3;stroke-width:2}.arrow{stroke:#a8bdd9;stroke-width:3;marker-end:url(#m)}.small{font-size:16px}.label{font-size:20px;font-weight:bold}</style><marker id="m" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#a8bdd9"/></marker></defs>
+  <rect width="1200" height="650" fill="#08111f" rx="20"/>
+  <text x="55" y="65" class="label" font-size="32">ProofPilot — evidence-first delivery agent</text>
+  <rect class="box" x="55" y="185" width="180" height="90" rx="12"/><text x="88" y="225" class="label">Professional</text><text x="110" y="252" class="label">user</text>
+  <rect class="box" x="330" y="185" width="200" height="90" rx="12"/><text x="380" y="225" class="label">Web intake</text><text x="365" y="252" class="small">brief + context</text>
+  <rect class="box" x="625" y="185" width="185" height="90" rx="12"/><text x="670" y="225" class="label">FastAPI</text><text x="647" y="252" class="small">mode routing</text>
+  <rect class="box" x="590" y="365" width="225" height="100" rx="12"/><text x="617" y="407" class="label">Local workflow</text><text x="620" y="434" class="small">explicitly non-AI</text>
+  <rect class="aws" x="920" y="365" width="225" height="100" rx="12"/><text x="965" y="407" class="label">Strands Agent</text><text x="948" y="434" class="small">AWS / Bedrock mode</text>
+  <rect class="gate" x="885" y="185" width="235" height="90" rx="12"/><text x="921" y="222" class="label">Human approval</text><text x="918" y="250" class="small">scope, price, external send</text>
+  <line class="arrow" x1="235" y1="230" x2="330" y2="230"/><line class="arrow" x1="530" y1="230" x2="625" y2="230"/><line class="arrow" x1="717" y1="275" x2="702" y2="365"/><line class="arrow" x1="810" y1="230" x2="885" y2="230"/><line class="arrow" x1="810" y1="275" x2="1008" y2="365"/><line class="arrow" x1="702" y1="365" x2="885" y2="275"/><line class="arrow" x1="1008" y1="365" x2="1008" y2="275"/>
+  <text x="72" y="550" class="small">Outputs: evidence ledger · scope · risks · milestones · questions. No commitment is sent automatically.</text>
+</svg>

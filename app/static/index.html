@@ -14,7 +14,16 @@
     textarea { min-height:180px; resize:vertical; } label { display:block; margin:.6rem 0; font-weight:700; }
     button { background:#4f7cff; border:0; font-weight:800; cursor:pointer; margin-top:16px; } button:hover { background:#7197ff; }
     .callout, #result { margin-top:22px; padding:16px; border-radius:12px; background:#0d192a; border:1px solid #253954; }
-    #result { white-space:pre-wrap; overflow-wrap:anywhere; display:none; } .small { color:#afbed4; font-size:.9rem; }
+    #result { display:none; } .small { color:#afbed4; font-size:.9rem; }
+    .result-head { display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    .badge { display:inline-block; padding:5px 9px; border-radius:999px; background:#153f32; color:#8ee6b3; font-size:.76rem; font-weight:800; }
+    .cards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:14px; }
+    .card { padding:14px; border-radius:10px; background:#101f33; border:1px solid #29405f; }
+    .card h3 { margin:0 0 9px; color:#9db8ff; font-size:1rem; } .card ul { margin:0; padding-left:20px; }
+    .card li { margin:.42rem 0; color:#d7e3f5; }
+    .gate { grid-column:1/-1; border-color:#795d24; background:#2a2314; }
+    .gate h3 { color:#ffd779; } .source { color:#8ee6b3; font-size:.74rem; font-weight:700; }
+    .error { color:#ff9b9b; } @media(max-width:700px){.cards{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -34,10 +43,27 @@
   <pre id="result"></pre>
   <p class="small">AWS mode uses the Strands Agents SDK and your standard AWS credential chain. This app does not store credentials.</p>
   <script>
+    const escapeHtml = (value) => String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    const list = (items, formatter = escapeHtml) => `<ul>${items.map(item => `<li>${formatter(item)}</li>`).join('')}</ul>`;
+    const card = (title, body, className = '') => `<section class="card ${className}"><h3>${title}</h3>${body}</section>`;
+    function renderArtifact(data) {
+      if (!data.artifact) return `<p class="error">${escapeHtml(data.detail || 'AWS/Strands run did not return an artifact.')}</p>`;
+      const a = data.artifact;
+      const evidence = list(a.evidence, item => `<span class="source">${escapeHtml(item.source)}</span><br>${escapeHtml(item.statement)}`);
+      const milestones = list(a.milestones, item => `<strong>${escapeHtml(item.name)}</strong> — ${escapeHtml(item.outcome)}`);
+      return `<div class="result-head"><strong>Delivery evidence package</strong><span class="badge">${escapeHtml(data.mode)} · auditable</span></div>
+        <p class="small">${escapeHtml(data.notice)}</p><div class="cards">
+        ${card('Evidence ledger', evidence)}${card('Scope draft', list(a.scope))}
+        ${card('Risk register', list(a.risks))}${card('Open questions', list(a.open_questions))}
+        ${card('Milestones', milestones)}${card('Approval gate', `<strong>Status: ${escapeHtml(a.approval_gate.status)}</strong><p>${escapeHtml(a.approval_gate.reason)}</p>`, 'gate')}
+        </div>`;
+    }
     document.getElementById('intake').addEventListener('submit', async (event) => {
-      event.preventDefault(); const result = document.getElementById('result'); result.style.display='block'; result.textContent='Working…';
-      const response = await fetch('/api/analyze', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({brief:document.getElementById('brief').value, project_context:document.getElementById('context').value, mode:document.getElementById('mode').value})});
-      const data = await response.json(); result.textContent = JSON.stringify(data, null, 2);
+      event.preventDefault(); const result = document.getElementById('result'); result.style.display='block'; result.innerHTML='Working…';
+      try {
+        const response = await fetch('/api/analyze', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({brief:document.getElementById('brief').value, project_context:document.getElementById('context').value, mode:document.getElementById('mode').value})});
+        const data = await response.json(); result.innerHTML = renderArtifact(data);
+      } catch (error) { result.innerHTML = `<p class="error">Request failed: ${escapeHtml(error.message)}</p>`; }
     });
   </script>
 </body>
